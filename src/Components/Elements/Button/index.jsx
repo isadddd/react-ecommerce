@@ -1,3 +1,5 @@
+import { Link, NavLink } from "react-router";
+
 const Button = ({ children, variant = 'primary' }) => {
   const variants = {
     primary: 'bg-black text-white hover:bg-gray-800',
@@ -5,9 +7,9 @@ const Button = ({ children, variant = 'primary' }) => {
   }
 
   return (
-    <button className={`rounded-lg px-5 py-3 ${variants[variant]}`}>
+    <Link to="/" className={`rounded-lg px-5 py-3 ${variants[variant]}`}>
       {children}
-    </button>
+    </Link>
   )
 }
 
