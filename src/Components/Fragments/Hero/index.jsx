@@ -14,7 +14,7 @@ const Hero = ({
   return (
     <section className="w-full px-4">
       <div
-        className={`mx-auto flex h-150 w-full max-w-295 gap-2 rounded-xl mt-5 ${bgColor[color]}`}
+        className={`mx-auto flex h-100 w-full max-w-295 gap-2 rounded-xl mt-5 ${bgColor[color]}`}
       >
         <ContentBlock
           title={title}
