@@ -1,4 +1,4 @@
-import Button from '@/components/Elements/Button'
+import LinkButton from '@/components/Elements/LinkButton'
 
 const ContentBlock = ({
   title,
@@ -13,9 +13,9 @@ const ContentBlock = ({
       {description && <p>{description}</p>}
 
       {buttonText && (
-        <Button variant={buttonVariant}>
+        <LinkButton variant={buttonVariant}>
           {buttonText}
-        </Button>
+        </LinkButton>
       )}
     </div>
   )
