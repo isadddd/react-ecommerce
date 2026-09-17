@@ -28,6 +28,7 @@ const NavbarMenu = [
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const username = localStorage.getItem("username");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
@@ -56,9 +57,12 @@ const Header = () => {
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          <Link to="/login" className="transition-colors hover:text-gray-500">
-            Login
-          </Link>
+          <Link
+            to={username ? "#" : "/login"}
+            className="transition-colors hover:text-gray-500"
+          >
+            {username ? `Hallo, ${username}` : "Login"}
+          </Link> 
         </div>
 
         {/* Mobile Burger */}
