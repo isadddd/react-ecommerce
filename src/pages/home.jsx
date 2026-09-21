@@ -1,4 +1,5 @@
 import Hero from "@/components/Fragments/Hero";
+import Test from "@/components/Fragments/Test";
 const Home = () => {
   return (
     <>
@@ -8,6 +9,7 @@ const Home = () => {
         buttonText="Run"
         buttonVariant="secondary"
       />
+      <Test />
     </>
   );
 };
