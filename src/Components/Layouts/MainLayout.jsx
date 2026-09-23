@@ -1,5 +1,6 @@
-import { Outlet } from 'react-router'
-import Header from '@/components/Layouts/Header'
+import { Outlet } from "react-router";
+import Header from "@/components/Fragments/Header";
+import CartDrawer from "@/components/Fragments/CartDrawer";
 
 const MainLayout = () => {
   return (
@@ -8,8 +9,9 @@ const MainLayout = () => {
       <main>
         <Outlet />
       </main>
+      <CartDrawer />
     </>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;

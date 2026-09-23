@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const LinkButton = ({ children, to, variant = "primary", ...props }) => {
+const ButtonLink = ({ children, to, variant = "primary", ...props }) => {
   const variants = {
     primary: "bg-black text-white hover:bg-gray-800",
     secondary: "bg-gray-100 text-black hover:bg-gray-200",
@@ -13,4 +13,4 @@ const LinkButton = ({ children, to, variant = "primary", ...props }) => {
   );
 };
 
-export default LinkButton;
+export default ButtonLink;

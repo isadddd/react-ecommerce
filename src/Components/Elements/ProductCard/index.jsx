@@ -1,25 +1,13 @@
 import Button from "@/components/Elements/Button";
+import { useCart } from "@/context/CartContext";
 
 import iconCart from "@/assets/cart.svg";
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCart();
+
   const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingProduct = cart.find((item) => item.id === product.id);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({
-        ...product,
-        quantity: 1,
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    window.dispatchEvent(new Event("cartUpdated"));
+    addToCart(product);
   };
 
   return (
@@ -27,19 +15,28 @@ const ProductCard = ({ product }) => {
       <img
         src={product.images[0]}
         alt={product.title}
-        className="border aspect-square w-full"
+        className="aspect-square w-full border"
       />
+
       <div className="md:p-4">
-        <h3 className="text-base md:text-xl truncate">{product.title}</h3>
-        <p className="text-xs md:text-sm mt-1 line-clamp-2">
+        <h3 className="truncate text-base md:text-xl">{product.title}</h3>
+
+        <p className="mt-1 line-clamp-2 text-xs md:text-sm">
           ☆ {product.rating}
         </p>
-        <p className="text-xs md:text-base mt-1 line-clamp-2">
+
+        <p className="mt-1 line-clamp-2 text-xs md:text-base">
           {product.description}
         </p>
-        <div className="flex justify-between items-center mt-3">
+
+        <div className="mt-3 flex items-center justify-between">
           <p className="font-semibold">${product.price}</p>
-          <Button onClick={handleAddToCart} className="p-2! rounded-full! cursor-pointer">
+
+          <Button
+            variant="secondary"
+            onClick={handleAddToCart}
+            className="cursor-pointer rounded-full! p-2!"
+          >
             <img src={iconCart} alt="cart" width="20" />
           </Button>
         </div>
