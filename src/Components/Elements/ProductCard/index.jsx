@@ -1,5 +1,6 @@
 import Button from "@/components/Elements/Button";
 import { useCart } from "@/context/CartContext";
+import { getDiscountedPrice, formatPrice } from "@/utils/price";
 
 import iconCart from "@/assets/cart.svg";
 
@@ -10,11 +11,20 @@ const ProductCard = ({ product }) => {
     addToCart(product);
   };
 
+  const discountedPrice = getDiscountedPrice(
+    product.price,
+    product.discountPercentage,
+  );
+
   return (
     <div className="flex flex-col gap-1 border bg-white p-3">
       <img
-        src={product.images[0]}
+        src={product.thumbnail}
         alt={product.title}
+        width="10"
+        height="10"
+        loading="lazy"
+        decoding="async"
         className="aspect-square w-full border"
       />
 
@@ -30,7 +40,19 @@ const ProductCard = ({ product }) => {
         </p>
 
         <div className="mt-3 flex items-center justify-between">
-          <p className="font-semibold">${product.price}</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold">{formatPrice(discountedPrice)}</p>
+
+              <span className="text-xs text-red-500">
+                -{product.discountPercentage}%
+              </span>
+            </div>
+
+            <p className="text-sm text-gray-400 line-through">
+              {formatPrice(product.price)}
+            </p>
+          </div>
 
           <Button
             variant="secondary"

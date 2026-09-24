@@ -1,7 +1,13 @@
 import { useCart } from "@/context/CartContext";
+import { getDiscountedPrice, formatPrice } from "@/utils/price";
 
 const CartItem = ({ product }) => {
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
+
+  const discountedPrice = getDiscountedPrice(
+    product.price,
+    product.discountPercentage,
+  );
 
   return (
     <div className="flex gap-3 border-b border-gray-200 py-4">
@@ -24,7 +30,19 @@ const CartItem = ({ product }) => {
           </button>
         </div>
 
-        <p className="mt-1 text-sm text-gray-500">${product.price}</p>
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold">{formatPrice(discountedPrice)}</p>
+
+            <span className="text-xs text-red-500">
+              -{product.discountPercentage}%
+            </span>
+          </div>
+
+          <p className="text-sm text-gray-400 line-through">
+            {formatPrice(product.price)}
+          </p>
+        </div>
 
         <div className="mt-3 flex items-center gap-3">
           <button

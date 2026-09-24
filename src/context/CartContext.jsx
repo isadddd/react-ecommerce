@@ -1,18 +1,19 @@
-import { createContext, useContext, useEffect, useReducer } from 'react'
+import { createContext, useContext, useEffect, useReducer } from "react";
+import { getDiscountedPrice } from "@/utils/price";
 
-const CartContext = createContext(null)
+const CartContext = createContext(null);
 
 const initialState = {
-  cart: JSON.parse(localStorage.getItem('cart')) || [],
+  cart: JSON.parse(localStorage.getItem("cart")) || [],
   isCartOpen: false,
-}
+};
 
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD_ITEM': {
+    case "ADD_ITEM": {
       const existingProduct = state.cart.find(
-        (item) => item.id === action.payload.id
-      )
+        (item) => item.id === action.payload.id,
+      );
 
       if (existingProduct) {
         return {
@@ -23,9 +24,9 @@ const cartReducer = (state, action) => {
                   ...item,
                   quantity: item.quantity + 1,
                 }
-              : item
+              : item,
           ),
-        }
+        };
       }
 
       return {
@@ -37,16 +38,16 @@ const cartReducer = (state, action) => {
             quantity: 1,
           },
         ],
-      }
+      };
     }
 
-    case 'REMOVE_ITEM':
+    case "REMOVE_ITEM":
       return {
         ...state,
         cart: state.cart.filter((item) => item.id !== action.payload),
-      }
+      };
 
-    case 'INCREASE_QUANTITY':
+    case "INCREASE_QUANTITY":
       return {
         ...state,
         cart: state.cart.map((item) =>
@@ -55,11 +56,11 @@ const cartReducer = (state, action) => {
                 ...item,
                 quantity: item.quantity + 1,
               }
-            : item
+            : item,
         ),
-      }
+      };
 
-    case 'DECREASE_QUANTITY':
+    case "DECREASE_QUANTITY":
       return {
         ...state,
         cart: state.cart
@@ -69,96 +70,98 @@ const cartReducer = (state, action) => {
                   ...item,
                   quantity: item.quantity - 1,
                 }
-              : item
+              : item,
           )
           .filter((item) => item.quantity > 0),
-      }
+      };
 
-    case 'CLEAR_CART':
+    case "CLEAR_CART":
       return {
         ...state,
         cart: [],
-      }
+      };
 
-    case 'OPEN_CART':
+    case "OPEN_CART":
       return {
         ...state,
         isCartOpen: true,
-      }
+      };
 
-    case 'CLOSE_CART':
+    case "CLOSE_CART":
       return {
         ...state,
         isCartOpen: false,
-      }
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState)
+  const [state, dispatch] = useReducer(cartReducer, initialState);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state.cart))
-  }, [state.cart])
+    localStorage.setItem("cart", JSON.stringify(state.cart));
+  }, [state.cart]);
 
   const addToCart = (product) => {
     dispatch({
-      type: 'ADD_ITEM',
+      type: "ADD_ITEM",
       payload: product,
-    })
-  }
+    });
+  };
 
   const removeFromCart = (productId) => {
     dispatch({
-      type: 'REMOVE_ITEM',
+      type: "REMOVE_ITEM",
       payload: productId,
-    })
-  }
+    });
+  };
 
   const increaseQuantity = (productId) => {
     dispatch({
-      type: 'INCREASE_QUANTITY',
+      type: "INCREASE_QUANTITY",
       payload: productId,
-    })
-  }
+    });
+  };
 
   const decreaseQuantity = (productId) => {
     dispatch({
-      type: 'DECREASE_QUANTITY',
+      type: "DECREASE_QUANTITY",
       payload: productId,
-    })
-  }
+    });
+  };
 
   const clearCart = () => {
     dispatch({
-      type: 'CLEAR_CART',
-    })
-  }
+      type: "CLEAR_CART",
+    });
+  };
 
   const openCart = () => {
     dispatch({
-      type: 'OPEN_CART',
-    })
-  }
+      type: "OPEN_CART",
+    });
+  };
 
   const closeCart = () => {
     dispatch({
-      type: 'CLOSE_CART',
-    })
-  }
+      type: "CLOSE_CART",
+    });
+  };
 
   const totalItems = state.cart.reduce(
     (total, item) => total + item.quantity,
-    0
-  )
+    0,
+  );
 
   const totalPrice = state.cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  )
+    (total, item) =>
+      total +
+      getDiscountedPrice(item.price, item.discountPercentage) * item.quantity,
+    0,
+  );
 
   return (
     <CartContext.Provider
@@ -178,9 +181,9 @@ export const CartProvider = ({ children }) => {
     >
       {children}
     </CartContext.Provider>
-  )
-}
+  );
+};
 
 export const useCart = () => {
-  return useContext(CartContext)
-}
+  return useContext(CartContext);
+};
