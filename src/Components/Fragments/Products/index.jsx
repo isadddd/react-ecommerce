@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import ProductCard from "@/components/Elements/ProductCard";
-import Button from "@/components/Elements/Button";
+import Pagination from "@/components/Elements/Pagination";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -31,38 +31,24 @@ const Products = () => {
   }, [page]);
 
   return (
-    <section className="w-full px-4">
+    <section className="w-full px-4 pb-5">
       <div
-        className={`mx-auto my-5 grid w-full max-w-295 grid-cols-2 rounded-xl gap-1 md:grid-cols-4
-    transition-opacity duration-300 ease-in-out
-    ${loading ? "opacity-20" : "opacity-100"}`}
+        className={`mx-auto my-5 grid w-full max-w-295 grid-cols-2 gap-1 rounded-xl transition-opacity duration-300 ease-in-out md:grid-cols-4 ${
+          loading ? "opacity-20" : "opacity-100"
+        }`}
       >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
-      <div className="flex justify-center items-center gap-5">
-        <Button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1 || loading}
-          className="cursor-pointer disabled:cursor-default "
-        >
-          Previous
-        </Button>
-
-        <span className="text-center">
-          Page {page} of {totalPages}
-        </span>
-
-        <Button
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages || loading}
-          className="cursor-pointer disabled:cursor-default "
-        >
-          Next
-        </Button>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        loading={loading}
+        onPrevious={() => setPage((prev) => prev - 1)}
+        onNext={() => setPage((prev) => prev + 1)}
+      />
     </section>
   );
 };

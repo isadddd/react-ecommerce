@@ -1,10 +1,17 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+
 import Button from "@/components/Elements/Button";
-import { getCurrentUser, login } from "@/services/auth";
+import { useAuth } from "@/context/AuthContext";
 
 const AuthForm = ({ className }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -16,19 +23,13 @@ const AuthForm = ({ className }) => {
     setError("");
 
     try {
-      const data = await login(username, password);
+      await login(username, password);
 
-      console.log("LOGIN:", data);
+      const from = location.state?.from?.pathname || "/shop";
 
-      localStorage.setItem("accessToken", data.accessToken);
-
-      const user = await getCurrentUser();
-
-      console.log("CURRENT USER:", user);
-
-      // window.location.href = "/shop"
+      navigate(from, { replace: true });
     } catch (error) {
-      switch (error.message) {
+      switch (error.code) {
         case "INVALID_CREDENTIALS":
           setError("Username atau password salah.");
           break;
@@ -80,7 +81,7 @@ const AuthForm = ({ className }) => {
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <Button className="mt-5 cursor-pointer" type="submit" disabled={loading}>
-        {loading ? "Logging in..." : "Submit"}
+        {loading ? "Login..." : "Submit"}
       </Button>
     </form>
   );

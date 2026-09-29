@@ -1,6 +1,7 @@
 import Button from "@/components/Elements/Button";
 import { useCart } from "@/context/CartContext";
 import { getDiscountedPrice, formatPrice } from "@/utils/price";
+import { Link } from "react-router";
 
 import iconCart from "@/assets/cart.svg";
 
@@ -18,15 +19,17 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="flex flex-col gap-1 border bg-white p-3">
-      <img
-        src={product.thumbnail}
-        alt={product.title}
-        width="10"
-        height="10"
-        loading="lazy"
-        decoding="async"
-        className="aspect-square w-full border"
-      />
+      <Link to={`/products/${product.id}`}>
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          width="10"
+          height="10"
+          loading="lazy"
+          decoding="async"
+          className="aspect-square w-full border"
+        />
+      </Link>
 
       <div className="md:p-4">
         <h3 className="truncate text-base md:text-xl">{product.title}</h3>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
+import { useAuth } from "@/context/AuthContext";
 
 import CartButton from "@/components/Elements/CartButton";
 import Logo from "@/assets/logo.svg";
@@ -30,14 +31,14 @@ const NavbarMenu = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [username, setUsername] = useState(localStorage.getItem("username"));
+
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-
-    setUsername(null);
+    logout();
     setIsProfileOpen(false);
+    setIsMenuOpen(false);
+    window.location.href = "/login";
   };
 
   const handleMobileNavClick = () => {
@@ -76,14 +77,14 @@ const Header = () => {
         <div className="relative hidden items-center gap-4 md:flex">
           <CartButton />
 
-          {username ? (
+          {user ? (
             <>
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
                 className="transition-colors hover:text-gray-500"
               >
-                Hallo, {username}
+                Hello, {user.firstName}
               </button>
 
               {/* Profile Dropdown */}
@@ -96,6 +97,11 @@ const Header = () => {
               >
                 <nav className="border border-gray-200 bg-white">
                   <ul className="px-4 py-4">
+                    <li>
+                      <Link to="/profile" className="block w-full text-left">
+                        Profile
+                      </Link>
+                    </li>
                     <li>
                       <button
                         type="button"
@@ -156,13 +162,10 @@ const Header = () => {
           ))}
 
           <li>
-            {username ? (
+            {user ? (
               <button
                 type="button"
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
+                onClick={handleLogout}
                 className="block py-3"
               >
                 Logout

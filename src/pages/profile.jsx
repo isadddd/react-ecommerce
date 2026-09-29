@@ -1,9 +1,9 @@
 import Hero from "@/components/Fragments/Hero";
-const Home = () => {
+const Profile = () => {
   return (
     <>
       <Hero
-        title="Home"
+        title="Profile"
         description="description"
         buttonText="Run"
         buttonVariant="secondary"
@@ -12,4 +12,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Profile;
