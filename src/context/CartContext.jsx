@@ -1,15 +1,24 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { getDiscountedPrice } from "@/utils/price";
+import { useAuth } from "@/context/AuthContext";
 
 const CartContext = createContext(null);
 
 const initialState = {
-  cart: JSON.parse(localStorage.getItem("cart")) || [],
+  cart: [],
+  cartId: null,
   isCartOpen: false,
 };
 
 const cartReducer = (state, action) => {
   switch (action.type) {
+    case "SET_CART":
+      return {
+        ...state,
+        cartId: action.payload.cartId,
+        cart: action.payload.products,
+      };
+
     case "ADD_ITEM": {
       const existingProduct = state.cart.find(
         (item) => item.id === action.payload.id,
@@ -99,44 +108,215 @@ const cartReducer = (state, action) => {
 };
 
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(state.cart));
-  }, [state.cart]);
+    if (!user?.id) return;
 
-  const addToCart = (product) => {
-    dispatch({
-      type: "ADD_ITEM",
-      payload: product,
-    });
+    fetch(`https://dummyjson.com/carts/user/${user.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const cart = data.carts[0];
+
+        dispatch({
+          type: "SET_CART",
+          payload: {
+            cartId: cart.id,
+            products: cart.products || [],
+          },
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [user?.id]);
+
+  const addToCart = async (product) => {
+    const existingProduct = state.cart.find((item) => item.id === product.id);
+
+    const newQuantity = existingProduct ? existingProduct.quantity + 1 : 1;
+
+    try {
+      const res = await fetch(`https://dummyjson.com/carts/${state.cartId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: true,
+          products: [
+            {
+              id: product.id,
+              quantity: newQuantity,
+            },
+          ],
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      const data = await res.json();
+
+      console.log("Updated cart:", data);
+
+      dispatch({
+        type: "ADD_ITEM",
+        payload: product,
+      });
+    } catch (error) {
+      console.error("Failed to add product:", error);
+    }
   };
 
-  const removeFromCart = (productId) => {
-    dispatch({
-      type: "REMOVE_ITEM",
-      payload: productId,
-    });
+  const removeFromCart = async (productId) => {
+    const updatedProducts = state.cart
+      .filter((item) => item.id !== productId)
+      .map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      }));
+
+    try {
+      const res = await fetch(`https://dummyjson.com/carts/${state.cartId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: false,
+          products: updatedProducts,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to remove product");
+      }
+
+      const data = await res.json();
+
+      console.log("Updated cart:", data);
+
+      dispatch({
+        type: "REMOVE_ITEM",
+        payload: productId,
+      });
+    } catch (error) {
+      console.error("Failed to remove product:", error);
+    }
   };
 
-  const increaseQuantity = (productId) => {
-    dispatch({
-      type: "INCREASE_QUANTITY",
-      payload: productId,
-    });
+  const increaseQuantity = async (productId) => {
+    const product = state.cart.find((item) => item.id === productId);
+
+    if (!product) return;
+
+    const newQuantity = product.quantity + 1;
+
+    try {
+      const res = await fetch(`https://dummyjson.com/carts/${state.cartId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: true,
+          products: [
+            {
+              id: productId,
+              quantity: newQuantity,
+            },
+          ],
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update cart");
+      }
+
+      const data = await res.json();
+
+      console.log("Updated cart:", data);
+
+      dispatch({
+        type: "INCREASE_QUANTITY",
+        payload: productId,
+      });
+    } catch (error) {
+      console.error("Failed to increase quantity:", error);
+    }
   };
 
-  const decreaseQuantity = (productId) => {
-    dispatch({
-      type: "DECREASE_QUANTITY",
-      payload: productId,
-    });
+  const decreaseQuantity = async (productId) => {
+    const product = state.cart.find((item) => item.id === productId);
+
+    if (!product) return;
+
+    const newQuantity = product.quantity - 1;
+
+    try {
+      const res = await fetch(`https://dummyjson.com/carts/${state.cartId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: true,
+          products: [
+            {
+              id: productId,
+              quantity: newQuantity,
+            },
+          ],
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update cart");
+      }
+
+      const data = await res.json();
+
+      console.log("Updated cart:", data);
+
+      dispatch({
+        type: "DECREASE_QUANTITY",
+        payload: productId,
+      });
+    } catch (error) {
+      console.error("Failed to decrease quantity:", error);
+    }
   };
 
-  const clearCart = () => {
-    dispatch({
-      type: "CLEAR_CART",
-    });
+  const clearCart = async () => {
+    try {
+      const res = await fetch(`https://dummyjson.com/carts/${state.cartId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          merge: false,
+          products: [],
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to clear cart");
+      }
+
+      const data = await res.json();
+
+      console.log("Updated cart:", data);
+
+      dispatch({
+        type: "CLEAR_CART",
+      });
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+    }
   };
 
   const openCart = () => {

@@ -32,15 +32,17 @@ const ProductCard = ({ product }) => {
       </Link>
 
       <div className="md:p-4">
-        <h3 className="truncate text-base md:text-xl">{product.title}</h3>
+        <Link to={`/products/${product.id}`}>
+          <h3 className="truncate text-base md:text-xl">{product.title}</h3>
 
-        <p className="mt-1 line-clamp-2 text-xs md:text-sm">
-          ☆ {product.rating}
-        </p>
+          <p className="mt-1 line-clamp-2 text-xs md:text-sm">
+            ☆ {product.rating}
+          </p>
 
-        <p className="mt-1 line-clamp-2 text-xs md:text-base">
-          {product.description}
-        </p>
+          <p className="mt-1 line-clamp-2 text-xs md:text-base">
+            {product.description}
+          </p>
+        </Link>
 
         <div className="mt-3 flex items-center justify-between">
           <div>

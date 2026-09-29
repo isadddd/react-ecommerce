@@ -12,7 +12,7 @@ const CartItem = ({ product }) => {
   return (
     <div className="flex gap-3 border-b border-gray-200 py-4">
       <img
-        src={product.images[0]}
+        src={product.thumbnail}
         alt={product.title}
         className="h-20 w-20 shrink-0 object-cover"
       />
