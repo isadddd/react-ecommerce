@@ -1,76 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router";
-import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
+import { Link } from "react-router";
 
 import CartButton from "@/components/Elements/CartButton";
-import iconSearch from "@/assets/search.svg";
 import Logo from "@/assets/logo.svg";
 
-const NavbarMenu = [
-  {
-    id: 1,
-    title: "Home",
-    to: "/",
-  },
-  {
-    id: 2,
-    title: "Shop",
-    to: "/shop",
-  },
-  {
-    id: 3,
-    title: "About",
-    to: "/about",
-  },
-  {
-    id: 4,
-    title: "Contact",
-    to: "/contact",
-  },
-];
+import Navigation from "./Navigation";
+import SearchDropdown from "./SearchDropdown";
+import ProfileDropdown from "./ProfileDropdown";
+import MobileMenu from "./MobileMenu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
-
-  const searchRef = useRef(null);
-  const profileRef = useRef(null);
-
-  const { user, logout } = useAuth();
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setIsSearch(false);
-      }
-
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsProfileOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    setIsProfileOpen(false);
-    setIsMenuOpen(false);
-    window.location.href = "/login";
-  };
-
-  const handleMobileNavClick = () => {
-    setIsMenuOpen(false);
-  };
-
-  const handleSearch = () => {
-    setIsSearch((prev) => !prev);
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
@@ -81,92 +21,13 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:block">
-          <ul className="flex items-center gap-6">
-            {NavbarMenu.map((item) => (
-              <li key={item.id}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "font-semibold text-black"
-                      : "text-gray-500 transition-colors hover:text-black"
-                  }
-                >
-                  {item.title}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <Navigation />
 
         {/* Desktop Actions */}
         <div className="relative hidden items-center gap-4 md:flex">
-          <div ref={searchRef} className="relative flex justify-center">
-            <button onClick={handleSearch} className="cursor-pointer">
-              <img src={iconSearch} alt="#" />
-            </button>
-            <div
-              className={`absolute top-full right-0 mt-3 flex origin-top-right items-center gap-2 rounded-xl border bg-white p-3 transition-all duration-200 ${
-                isSearch
-                  ? "visible translate-y-0 scale-100 opacity-100"
-                  : "invisible -translate-y-2 scale-95 opacity-0"
-              }`}
-            >
-              <input
-                type="text"
-                className="w-75 rounded-lg border bg-white p-2"
-                placeholder="Search something..."
-              />
-
-              <button type="button">
-                <img src={iconSearch} alt="Search" />
-              </button>
-            </div>
-          </div>
+          <SearchDropdown />
           <CartButton />
-          {user ? (
-            <div ref={profileRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setIsProfileOpen((prev) => !prev)}
-                className="transition-colors hover:text-gray-500 cursor-pointer"
-              >
-                Hello, {user.firstName}
-              </button>
-
-              <div
-                className={`absolute top-full right-0 mt-2 origin-top-right transition-all duration-200 ${
-                  isProfileOpen
-                    ? "visible translate-y-0 scale-100 opacity-100"
-                    : "invisible -translate-y-2 scale-95 opacity-0"
-                }`}
-              >
-                <nav className="border border-gray-200 bg-white rounded-xl">
-                  <ul className="px-4 py-4">
-                    <li>
-                      <Link to="/profile" className="block w-full text-left">
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="block w-full text-left"
-                      >
-                        Logout
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-          ) : (
-            <Link to="/login" className="transition-colors hover:text-gray-500 cursor-pointer">
-              Login
-            </Link>
-          )}
+          <ProfileDropdown />
         </div>
 
         {/* Mobile Actions */}
@@ -186,49 +47,10 @@ const Header = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <nav
-        className={`absolute top-full left-0 w-full max-h-fit overflow-hidden border-t border-gray-200 bg-white transition-all duration-300 md:hidden ${
-          isMenuOpen ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <ul className="mx-auto max-w-295 px-4 py-4">
-          {NavbarMenu.map((item) => (
-            <li key={item.id}>
-              <NavLink
-                to={item.to}
-                onClick={handleMobileNavClick}
-                className={({ isActive }) =>
-                  `block py-3 ${
-                    isActive ? "font-semibold text-black" : "text-gray-500"
-                  }`
-                }
-              >
-                {item.title}
-              </NavLink>
-            </li>
-          ))}
-
-          <li>
-            {user ? (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="block py-3"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                onClick={handleMobileNavClick}
-                className="block py-3"
-              >
-                Login
-              </Link>
-            )}
-          </li>
-        </ul>
-      </nav>
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </header>
   );
 };

@@ -11,6 +11,7 @@ import NotFound from "./pages/notfound";
 import Login from "./pages/login";
 import Profile from "@/pages/profile";
 import ProductDetail from "./pages/single-product";
+import SearchPage from "./pages/search-page";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/search" element={<SearchPage />} />
 
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<Login />} />
