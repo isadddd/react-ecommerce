@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 
 import CartButton from "@/components/Elements/CartButton";
+import iconSearch from "@/assets/search.svg";
 import Logo from "@/assets/logo.svg";
 
 const NavbarMenu = [
@@ -31,8 +32,30 @@ const NavbarMenu = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+
+  const searchRef = useRef(null);
+  const profileRef = useRef(null);
 
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearch(false);
+      }
+
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -43,6 +66,10 @@ const Header = () => {
 
   const handleMobileNavClick = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleSearch = () => {
+    setIsSearch((prev) => !prev);
   };
 
   return (
@@ -75,19 +102,39 @@ const Header = () => {
 
         {/* Desktop Actions */}
         <div className="relative hidden items-center gap-4 md:flex">
-          <CartButton />
+          <div ref={searchRef} className="relative flex justify-center">
+            <button onClick={handleSearch} className="cursor-pointer">
+              <img src={iconSearch} alt="#" />
+            </button>
+            <div
+              className={`absolute top-full right-0 mt-3 flex origin-top-right items-center gap-2 rounded-xl border bg-white p-3 transition-all duration-200 ${
+                isSearch
+                  ? "visible translate-y-0 scale-100 opacity-100"
+                  : "invisible -translate-y-2 scale-95 opacity-0"
+              }`}
+            >
+              <input
+                type="text"
+                className="w-75 rounded-lg border bg-white p-2"
+                placeholder="Search something..."
+              />
 
+              <button type="button">
+                <img src={iconSearch} alt="Search" />
+              </button>
+            </div>
+          </div>
+          <CartButton />
           {user ? (
-            <>
+            <div ref={profileRef} className="relative">
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
-                className="transition-colors hover:text-gray-500"
+                className="transition-colors hover:text-gray-500 cursor-pointer"
               >
                 Hello, {user.firstName}
               </button>
 
-              {/* Profile Dropdown */}
               <div
                 className={`absolute top-full right-0 mt-2 origin-top-right transition-all duration-200 ${
                   isProfileOpen
@@ -95,7 +142,7 @@ const Header = () => {
                     : "invisible -translate-y-2 scale-95 opacity-0"
                 }`}
               >
-                <nav className="border border-gray-200 bg-white">
+                <nav className="border border-gray-200 bg-white rounded-xl">
                   <ul className="px-4 py-4">
                     <li>
                       <Link to="/profile" className="block w-full text-left">
@@ -114,9 +161,9 @@ const Header = () => {
                   </ul>
                 </nav>
               </div>
-            </>
+            </div>
           ) : (
-            <Link to="/login" className="transition-colors hover:text-gray-500">
+            <Link to="/login" className="transition-colors hover:text-gray-500 cursor-pointer">
               Login
             </Link>
           )}

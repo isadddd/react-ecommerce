@@ -9,7 +9,7 @@ const CartButton = () => {
     <button
       type="button"
       onClick={openCart}
-      className="relative transition-colors hover:text-gray-500"
+      className="relative transition-colors hover:text-gray-500 cursor-pointer"
       aria-label="Open cart"
     >
       <img src={iconCart} alt="#" />

@@ -7,7 +7,7 @@ const ButtonLink = ({ children, to, variant = "primary", ...props }) => {
   };
 
   return (
-    <Link className={`rounded-lg px-5 py-3 ${variants[variant]}`} {...props}>
+    <Link to={to} className={`rounded-lg px-5 py-3 ${variants[variant]}`} {...props}>
       {children}
     </Link>
   );

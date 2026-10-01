@@ -64,6 +64,7 @@ const AuthForm = ({ className }) => {
         name="username"
         placeholder="Username"
         required
+        autoComplete="current-password"
         disabled={loading}
       />
 
@@ -75,6 +76,7 @@ const AuthForm = ({ className }) => {
         name="password"
         placeholder="********"
         required
+        autoComplete="current-password"
         disabled={loading}
       />
 

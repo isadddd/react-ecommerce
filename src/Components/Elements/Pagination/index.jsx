@@ -2,7 +2,7 @@ import Button from "@/components/Elements/Button";
 
 const Pagination = ({ page, totalPages, loading, onPrevious, onNext }) => {
   return (
-    <div className="flex items-center justify-center gap-5">
+    <div className="flex items-center justify-center gap-5 my-5">
       <Button
         onClick={onPrevious}
         disabled={page === 1 || loading}
