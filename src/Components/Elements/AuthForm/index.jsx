@@ -5,6 +5,7 @@ import Button from "@/components/Elements/Button";
 import { useAuth } from "@/context/AuthContext";
 
 const AuthForm = ({ className }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -70,15 +71,27 @@ const AuthForm = ({ className }) => {
 
       <label htmlFor="password">Password</label>
 
-      <input
-        className="border px-3 py-2"
-        type="password"
-        name="password"
-        placeholder="********"
-        required
-        autoComplete="current-password"
-        disabled={loading}
-      />
+      <div className="relative">
+        <input
+          id="password"
+          className="w-full border px-3 py-2 pr-20"
+          type={showPassword ? "text" : "password"}
+          name="password"
+          placeholder="********"
+          required
+          autoComplete="current-password"
+          disabled={loading}
+        />
+
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          disabled={loading}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-900"
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
+      </div>
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 

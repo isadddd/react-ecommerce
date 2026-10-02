@@ -1,12 +1,15 @@
-import Button from "@/components/Elements/Button";
-import { useCart } from "@/context/CartContext";
-import { getDiscountedPrice, formatPrice } from "@/utils/price";
-import { useAuth } from "@/context/AuthContext";
-import { Link } from "react-router";
 import { useState } from "react";
+import { Link } from "react-router";
+
+import Button from "@/components/Elements/Button";
+import LoginPopup from "./LoginPopup";
+
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
+
+import { formatPrice, getDiscountedPrice } from "@/utils/price";
 
 import iconCart from "@/assets/cart.svg";
-import ButtonLink from "@/components/Elements/ButtonLink";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -83,27 +86,7 @@ const ProductCard = ({ product }) => {
       </div>
       {/* popup */}
       {showLoginPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-sm rounded-lg bg-white p-6">
-            <h2 className="text-lg font-semibold">Login required</h2>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Please login first to add products to your cart.
-            </p>
-
-            <div className="mt-5 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setShowLoginPopup(false)}
-                className="px-4 py-2 text-sm cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <ButtonLink to="/login">Login</ButtonLink>
-            </div>
-          </div>
-        </div>
+        <LoginPopup onClose={() => setShowLoginPopup(false)} />
       )}
     </>
   );
