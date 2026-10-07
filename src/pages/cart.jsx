@@ -32,7 +32,7 @@ const Cart = () => {
         <div className="mb-10">
           <h1 className="text-3xl font-semibold">Your Cart</h1>
           <p className="mt-2 text-gray-500">
-            Review your items before checkout.
+            Review your items before checkout
           </p>
         </div>
         <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
