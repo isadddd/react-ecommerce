@@ -1,5 +1,6 @@
 import { useCart } from "@/context/CartContext";
 import CartItem from "@/components/Elements/CartItem";
+import { Link } from "react-router";
 
 const CartDrawer = () => {
   const { cart, isCartOpen, totalPrice, closeCart, clearCart } = useCart();
@@ -58,12 +59,13 @@ const CartDrawer = () => {
               </span>
             </div>
 
-            <button
-              type="button"
-              className="w-full bg-black px-5 py-3 text-white transition-opacity hover:opacity-80"
+            <Link
+              to="/cart"
+              onClick={closeCart}
+              className="flex justify-center w-full bg-black px-5 py-3 text-white transition-opacity hover:opacity-80"
             >
               Checkout
-            </button>
+            </Link>
 
             <button
               type="button"

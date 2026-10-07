@@ -3,15 +3,16 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 
 import MainLayout from "@/components/Layouts/MainLayout";
 
-import Home from "./pages/home";
-import Shop from "./pages/shop";
-import About from "./pages/about";
-import Contact from "./pages/contact";
-import NotFound from "./pages/notfound";
-import Login from "./pages/login";
+import Home from "@/pages/home";
+import Shop from "@/pages/shop";
+import About from "@/pages/about";
+import Contact from "@/pages/contact";
+import NotFound from "@/pages/notfound";
+import Login from "@/pages/login";
 import Profile from "@/pages/profile";
-import ProductDetail from "./pages/single-product";
-import SearchPage from "./pages/search-page";
+import ProductDetail from "@/pages/single-product";
+import SearchPage from "@/pages/search-page";
+import Cart from "@/pages/cart";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/cart" element={<Cart />} />
 
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<Login />} />
